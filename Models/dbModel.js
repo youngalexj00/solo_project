@@ -7,11 +7,9 @@ const pool = new Pool({
 
 const db = {};
 
-db.getTable = (callback) => {
-  console.log('entering getTable')
-  let command = 'SELECT * FROM table1;'
+db.getTable = (tableName, callback) => {
+  let command = `SELECT * FROM ${tableName};`
   pool.query(command, (error, dbResponse) => {
-    
     if (error) console.log("ERROR", error);
     else return callback(dbResponse);
   })
