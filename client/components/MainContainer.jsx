@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import TableDisplay from './TableDisplay.jsx'
+import TablesDisplay from './TablesDisplay.jsx'
 import TableFinder from './TableFinder.jsx';
+
 class MainContainer extends Component {
 
   constructor () {
     super();
     this.state = {};
-    this.state.table = null;
+    this.state.tables = [];
     this.state.inputValue = '';
     this.getTable = this.getTable.bind(this);
     this.formatTable = this.formatTable.bind(this);
@@ -26,20 +27,28 @@ class MainContainer extends Component {
     })
       .then (res => res.json())
       .then (res => {
-        console.log('res is', res)
-        this.setState({table: res});
+        this.formatTable(res)
       })
       .catch((error)=> console.log('error from fetch', error))
   }
 
-  formatTable () {
-    console.log('entering format table', this.state.table)
+  formatTable (res) {
+    let rows = res;
+    let newTable = {};
+    newTable.tableName = this.state.inputValue;
+    newTable.columnNames = Object.keys(res[0]);
+    newTable.values = [];
+    for (let i = 0; i < res.length; i++) {
+      newTable.values.push(Object.values(res[i]));
+    }
+    let replacementTables = this.state.tables.slice();
+    replacementTables.push(newTable);
+    this.setState({tables: replacementTables})
   }
   handleInputFieldChange(e) {
     this.setState({inputValue: e.target.value});
   }
   handleInputButton(e) {
-    console.log('call to input button')
     this.getTable();
     e.preventDefault();
   }
@@ -48,7 +57,7 @@ class MainContainer extends Component {
       <div>
         Main Container
         <TableFinder handleInputButton={this.handleInputButton} inputValue={this.state.inputValue} handleInputFieldChange={this.handleInputFieldChange} />
-        <TableDisplay table={this.state.table}/>
+        <TablesDisplay tables={this.state.tables}/>
       </div>
     )
   }
