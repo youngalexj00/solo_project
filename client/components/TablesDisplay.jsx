@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import TableDisplay from './TableDisplay.jsx';
 
-const boxStyling = {
-  'background-color': 'red'
-}
+
 const outerBox = {
   'border': '2px solid black',
   'margin': '10px'
 }
-const titleBox = {
-  'border': '2px solid black',
-  'margin': '3px'
-}
+
 
 class TablesDisplay extends Component {
   constructor() {
@@ -25,7 +20,7 @@ class TablesDisplay extends Component {
     })
     if (tableElements.length === 0) tableElements = (<div>Empty</div>)
     return (
-      <div> 
+      <div style ={outerBox}> 
         {tableElements}
       </div>
      

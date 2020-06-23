@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 
+const header = {
+  'margin': '5px'
+};
 
 
 class TableFinder extends Component {
 
   render() {
     return (
-      <div>
+      <div style={header}>
         Table Finder
         <form id='tableForm'>
           <input id='tableInputField' placeholder='new table' 
