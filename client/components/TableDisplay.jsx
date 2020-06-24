@@ -14,8 +14,8 @@ class TableDisplay extends Component {
   constructor() {
     super();
     this.state = {};
-    this.state.rows = null;
-    this.state.columnHeaders = null;
+    this.state.rows = [];
+    this.state.columnHeaders = [];
     this.deleteRow = this.deleteRow.bind(this);
   }
 
@@ -42,8 +42,7 @@ class TableDisplay extends Component {
   }
 
   render() {
-    if (this.state.columnHeaders === null || this.state.columnHeaders === [] ||
-        this.state.rows === null || this.state.rows === []) {
+    if (this.state.columnHeaders === [] || this.state.rows === []) {
       return (
         <section style={styleTableDisplay}>
           <h2 style={{'marginLeft': '10px'}}>{this.props.tableName}</h2>
@@ -60,6 +59,7 @@ class TableDisplay extends Component {
     )
   }
   componentDidMount() {
+    console.log('this.props.tableName', this.props.tableName);
     let url = `/api/table/:${this.props.tableName}`;
     fetch(url, {
       method: 'POST',
@@ -76,18 +76,22 @@ class TableDisplay extends Component {
   formatTable(table) {
     console.log('CALL TO formatTable')
     console.log('table', table)
-    if (table.length === 0) {
-      console.log('inside if', table.length)
-      this.setState({columnHeaders: null, rows: null});
+    console.log(Object.keys(table)[0])
+    if (Object.keys(table)[0] === 'column_names') {  
+      let headers = Object.values(table.column_names);
+      let headerElements = [];
+      headers.forEach((ele) => {
+        headerElements.push(ele.column_name);
+      })
+      console.log('new column headers', Object.values(table.column_names))
+      this.setState({columnHeaders: headerElements, rows: []})
       return;
     }
-    console.log('before setState inside format Table')
     this.setState({columnHeaders: Object.keys(table[0])});
     let rows = []
     for (let i = 0; i < table.length; i++) {
       rows.push(Object.values(table[i]));
     }
-    console.log('setting rows as', rows)
     this.setState({rows: rows});
   }
 }

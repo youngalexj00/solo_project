@@ -14,12 +14,15 @@ db.deCapitalize = (string) => {
 }
 
 db.getTable = (tableName, callback) => {
+  console.log('entering db.getTable')
   let command = `SELECT * FROM ${tableName};`
+  console.log('command', command)
   pool.query(command, (error, dbResponse) => {
     if (error) console.log("ERROR", error);
     else return callback(dbResponse);
   })
 }
+
 db.deleteRow = (table, key, value, callback) => {
   let command = `DELETE FROM ${table} WHERE ${key}='${value}';`
   pool.query(command, (error, dbResponse) => {
@@ -28,9 +31,8 @@ db.deleteRow = (table, key, value, callback) => {
   })
 }
 db.getColumnNames = (table, callback) => {
-  console.log(db.deCapitalize(table));
-  let command = `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='${table}' ORDER BY ORDINAL_POSITION;`
-  console.log('command', command)
+  console.log('entering db.getColumnNames')
+  let command = `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='${db.deCapitalize(table)}' ORDER BY ORDINAL_POSITION;`
   pool.query(command, (error, dbResponse) => {
     console.log('inside query callback')
     if (error) console.log("ERROR", error);
