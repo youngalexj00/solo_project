@@ -12,8 +12,9 @@ class Header extends Component {
     return capitalized
   }
   render () {
-    //console.log('CALL TO : Header Render')
+    console.log('CALL TO : Header render')
     let headers = this.props.headers;
+    if (headers === null) return (<div id="no headers"></div>)
     let cells = []
     headers.forEach((header, index) => {
       cells.push((<Cell value={this.capitalize(header)} type='header' key={'headerCellKey'+index}/>))

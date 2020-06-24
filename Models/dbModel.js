@@ -7,6 +7,12 @@ const pool = new Pool({
 
 const db = {};
 
+db.deCapitalize = (string) => {
+  let decapitalized = string[0].toLowerCase();
+  decapitalized += string.slice(1);
+  return decapitalized
+}
+
 db.getTable = (tableName, callback) => {
   let command = `SELECT * FROM ${tableName};`
   pool.query(command, (error, dbResponse) => {
@@ -16,7 +22,15 @@ db.getTable = (tableName, callback) => {
 }
 db.deleteRow = (table, key, value, callback) => {
   let command = `DELETE FROM ${table} WHERE ${key}='${value}';`
-  console.log(command)
+  pool.query(command, (error, dbResponse) => {
+    if (error) console.log("ERROR", error);
+    else return callback(dbResponse);
+  })
+}
+db.getColumnNames = (table, callback) => {
+  console.log(db.deCapitalize(table));
+  let command = `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='${table}' ORDER BY ORDINAL_POSITION;`
+  console.log('command', command)
   pool.query(command, (error, dbResponse) => {
     console.log('inside query callback')
     if (error) console.log("ERROR", error);
@@ -26,5 +40,7 @@ db.deleteRow = (table, key, value, callback) => {
 
 module.exports = {
   getTable: db.getTable,
-  deleteRow: db.deleteRow
+  deleteRow: db.deleteRow,
+  getColumnNames: db.getColumnNames,
+  deCapitalize: db.deCapitalize
 }

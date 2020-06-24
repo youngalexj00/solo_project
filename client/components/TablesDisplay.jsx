@@ -8,8 +8,8 @@ class TablesDisplay extends Component {
     super();
   }
   render() {
-    let tableElements = [(<TableDisplay tableName={'Animals'} key={'TableDisplaysKeyTemporary'}/>)]
-    //let tableElements = [];
+    //let tableElements = [(<TableDisplay tableName={'Animals'} key={'TableDisplaysKeyTemporary'}/>)]
+    let tableElements = [];
     this.props.tables.forEach ((table, index) => {
       tableElements.push((<TableDisplay tableName={table} key={'TableDisplaysKey'+index}/>))
     })

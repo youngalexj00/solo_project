@@ -14,8 +14,8 @@ class TableDisplay extends Component {
   constructor() {
     super();
     this.state = {};
-    this.state.rows = [];
-    this.state.columnHeaders = [];
+    this.state.rows = null;
+    this.state.columnHeaders = null;
     this.deleteRow = this.deleteRow.bind(this);
   }
 
@@ -42,6 +42,15 @@ class TableDisplay extends Component {
   }
 
   render() {
+    if (this.state.columnHeaders === null || this.state.columnHeaders === [] ||
+        this.state.rows === null || this.state.rows === []) {
+      return (
+        <section style={styleTableDisplay}>
+          <h2 style={{'marginLeft': '10px'}}>{this.props.tableName}</h2>
+          <p style={{'marginLeft': '10px'}}>This Table is empty</p>
+        </section>
+      )
+    }
     return (
       <section style={styleTableDisplay}>
         <h2 style={{'marginLeft': '10px'}}>{this.props.tableName}</h2>
@@ -59,16 +68,26 @@ class TableDisplay extends Component {
     })
       .then (res => res.json())
       .then (res => {
+        console.log('res is ', res)
         this.formatTable(res);
       })
       .catch((error)=> console.log('error from fetch', error))
   }
   formatTable(table) {
+    console.log('CALL TO formatTable')
+    console.log('table', table)
+    if (table.length === 0) {
+      console.log('inside if', table.length)
+      this.setState({columnHeaders: null, rows: null});
+      return;
+    }
+    console.log('before setState inside format Table')
     this.setState({columnHeaders: Object.keys(table[0])});
     let rows = []
     for (let i = 0; i < table.length; i++) {
       rows.push(Object.values(table[i]));
     }
+    console.log('setting rows as', rows)
     this.setState({rows: rows});
   }
 }
