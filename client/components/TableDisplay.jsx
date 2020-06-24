@@ -22,10 +22,22 @@ class TableDisplay extends Component {
   deleteRow(e) {
     console.log('call to delete row')
     console.log(e.target.id)
-    let index = e.target.id;
+    let index = e.target.id - 1;
     let newRows = this.state.rows.slice();
-    newRows.splice(index - 1, 1);
+    let oldRow = newRows[index]
+    newRows.splice(index, 1);
+    let primaryValue = oldRow[0];
+    let primaryKey = this.state.columnHeaders[0];
     this.setState({rows: newRows})
+
+    let url = `/api/table/:${this.props.tableName}`;
+    fetch(url, {
+      method: 'DELETE',
+      body: JSON.stringify({table: this.props.tableName, primaryKey: primaryKey, primaryValue: primaryValue}),
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then (console.log("got response for fetch"))
+      .catch((error)=> console.log('error from fetch', error))
     e.preventDefault();
   }
 
@@ -42,7 +54,7 @@ class TableDisplay extends Component {
     let url = `/api/table/:${this.props.tableName}`;
     fetch(url, {
       method: 'POST',
-      body: JSON.stringify({tableName: this.props.tableName}),
+      body: JSON.stringify({table: this.props.tableName}),
       headers: { 'Content-Type': 'application/json' }
     })
       .then (res => res.json())

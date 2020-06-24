@@ -14,7 +14,17 @@ db.getTable = (tableName, callback) => {
     else return callback(dbResponse);
   })
 }
+db.deleteRow = (table, key, value, callback) => {
+  let command = `DELETE FROM ${table} WHERE ${key}='${value}';`
+  console.log(command)
+  pool.query(command, (error, dbResponse) => {
+    console.log('inside query callback')
+    if (error) console.log("ERROR", error);
+    else return callback(dbResponse);
+  })
+}
 
 module.exports = {
-  getTable: db.getTable
+  getTable: db.getTable,
+  deleteRow: db.deleteRow
 }
