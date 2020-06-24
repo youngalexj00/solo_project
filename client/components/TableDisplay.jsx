@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-
+import Header from './Header.jsx';
+import Rows from './Rows.jsx'
 const wrapper = {};
 const columnHeaders = {
   'display': 'flex'
@@ -25,27 +26,39 @@ class TableDisplay extends Component {
     this.state.nextIndex = 0;
     this.state.rows = [];
     this.state.columnHeaders = [];
-    this.state.displayTableNames = true;
-    this.formatTable = this.formatTable.bind(this);
+    this.state.columnHeadersElements = [];
+    this.deleteRow = this.deleteRow.bind(this);
   }
 
+  deleteRow(e) {
+    console.log('call to deleteRow');
+    console.log('e.target.id', e.target.id);
+    
+    //grab primary key -> assume that the first column is the primary key
+    //grab table name
+    //update state to remove row from rows
+    let index = e.target.id;
+    let rows = this.state.rows.slice();
+    console.log('rows', rows)
+    let row = rows.filter((ele, arrayIndex, array) =>  {console.log(ele); return index === ele.props.children[0];});
+    console.log('row', row)
+    let primaryKey = row.props.children[1].props.children;
+    //console.log('rows before', rows) 
+    rows.splice(index, 1);
+    //console.log('rows after', rows)
+    this.setState({rows: rows});
+    e.preventDefault();
+  }
   render() {
-    console.log('call to render inside of Table Display')
-
-    console.log('logging state', this.state);
-    let array = [(<div><div></div></div>), (<div><div></div></div>)]
     return (
-      <div style={wrapper}>
-        <div style={tableName}>{this.state.tableName}</div>
-        <div style={columnHeaders}>{this.state.columnHeaders}</div>
-        <div style={rows}>{this.state.rows}</div>
-      </div>
+      <section>
+        <Header headers={this.state.columnHeaders}/> 
+        <Rows rows={this.state.rows}/>
+      </section>
     )
   }
-
   componentDidMount() {
-    console.log('call to component did mount')
-    let url = `/api/table/${this.props.tableName}`;
+    let url = `/api/table/:${this.props.tableName}`;
     fetch(url, {
       method: 'POST',
       body: JSON.stringify({tableName: this.props.tableName}),
@@ -53,44 +66,15 @@ class TableDisplay extends Component {
     })
       .then (res => res.json())
       .then (res => {
-        console.log('back from fetch request')
-        console.log('res is ', res)
         this.formatTable(res);
       })
       .catch((error)=> console.log('error from fetch', error))
   }
   formatTable(table) {
-    console.log('call to format table')
-    //tableName
-    //columnNames
-    //rows
-      //rowValues
-    this.setState({tableName: this.props.tableName});
-    this.formatColumnHeaders(table);
-    this.formatRowValues(table);
-  }
-  formatColumnHeaders(table) {
-    let columnHeaders = Object.keys(table[0]);
-    let columnHeaderElements = []
-    columnHeaders.forEach((column, index) => {
-      columnHeaderElements.push((<div key ={'columnHeaderKey'+index} style={box} >{column}</div>));
-    })
-    this.setState({columnHeaders: columnHeaderElements});
-  }
-  formatRowValues(table) {
-    console.log('call to format values')
+    this.setState({columnHeaders: Object.keys(table[0])});
     let rows = []
     for (let i = 0; i < table.length; i++) {
-      let row = Object.values(table[i]);
-      let rowElements = [];
-      row.forEach((value, index) => {
-        rowElements.push((<div key={'rowKeydadv'+index+i} style={box}>{value}</div>));
-      })
-      rowElements.push(<button>X</button>)
-      console.log('row is ', rowElements)
-      let newRow = (<div key={'newRowKey'+i} style={rowStyle}>{rowElements}</div>)
-      console.log('newRow', newRow)
-      rows.push(newRow);
+      rows.push(Object.values(table[i]));
     }
     this.setState({rows: rows});
   }
