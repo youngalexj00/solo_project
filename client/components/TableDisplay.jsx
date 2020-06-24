@@ -1,59 +1,40 @@
 import React, {Component} from 'react';
 import Header from './Header.jsx';
 import Rows from './Rows.jsx'
-const wrapper = {};
-const columnHeaders = {
-  'display': 'flex'
-};
-const tableName = {};
-const rows = {
-  'display': 'flex',
-  'flexDirection': 'column'
-}
-const rowStyle = {
-  'display': 'flex'
-}
-const box = {
-  'width': '200px',
-  'border': '1px solid black'
+
+
+const styleTableDisplay = {
+  'border': '2px solid black',
+  'margin': '10px',
+  'borderRadius': '3px',
+  'width': '900px'
 }
 
 class TableDisplay extends Component {
   constructor() {
     super();
     this.state = {};
-    this.state.tableName = '';
-    this.state.nextIndex = 0;
     this.state.rows = [];
     this.state.columnHeaders = [];
-    this.state.columnHeadersElements = [];
     this.deleteRow = this.deleteRow.bind(this);
   }
 
   deleteRow(e) {
-    console.log('call to deleteRow');
-    console.log('e.target.id', e.target.id);
-    
-    //grab primary key -> assume that the first column is the primary key
-    //grab table name
-    //update state to remove row from rows
+    console.log('call to delete row')
+    console.log(e.target.id)
     let index = e.target.id;
-    let rows = this.state.rows.slice();
-    console.log('rows', rows)
-    let row = rows.filter((ele, arrayIndex, array) =>  {console.log(ele); return index === ele.props.children[0];});
-    console.log('row', row)
-    let primaryKey = row.props.children[1].props.children;
-    //console.log('rows before', rows) 
-    rows.splice(index, 1);
-    //console.log('rows after', rows)
-    this.setState({rows: rows});
+    let newRows = this.state.rows.slice();
+    newRows.splice(index - 1, 1);
+    this.setState({rows: newRows})
     e.preventDefault();
   }
+
   render() {
     return (
-      <section>
+      <section style={styleTableDisplay}>
+        <h2 style={{'marginLeft': '10px'}}>{this.props.tableName}</h2>
         <Header headers={this.state.columnHeaders}/> 
-        <Rows rows={this.state.rows}/>
+        <Rows rows={this.state.rows} deleteRow={this.deleteRow} />
       </section>
     )
   }

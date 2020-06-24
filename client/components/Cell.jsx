@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 
-const styleCell = {
-  'width': '200px',
-  'height': '30px',
-  'textAlign': 'center',
-  'margin-top': '5px'
-}
+
 
 class Cell extends Component {
   render () {
+    const styleCell = {
+      'width': '180px',
+      'height': '10px',
+      'textAlign': 'center',
+      'padding': '15px',
+      'border': '1px solid gray',
+      'margin': '0px 0px 10px 10px'
+    }
+    if (this.props.type === 'header') styleCell['fontSize'] = '18px';
+    else styleCell['fontSize'] = '13px'
     return (
-      <nav style={styleCell}>{this.props.value}</nav>
+      <div style={styleCell}>{this.props.value}</div>
     )
   };
 }
