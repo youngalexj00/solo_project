@@ -13,12 +13,10 @@ class MainContainer extends Component {
     this.formatTable = this.formatTable.bind(this);
     this.handleInputButton = this.handleInputButton.bind(this);
     this.handleInputFieldChange = this.handleInputFieldChange.bind(this);
-    console.log('constructed app')
+    this.addTable = this.addTable.bind(this);
   }
 
   getTable () {
-    console.log('inside getTable')
-    console.log(this.state.inputValue)
     let url = `/api/table/${this.state.inputValue}`;
     fetch(url, {
       method: 'POST',
@@ -41,6 +39,7 @@ class MainContainer extends Component {
     for (let i = 0; i < res.length; i++) {
       newTable.values.push(Object.values(res[i]));
     }
+    
     let replacementTables = this.state.tables.slice();
     replacementTables.push(newTable);
     this.setState({tables: replacementTables})
@@ -49,12 +48,17 @@ class MainContainer extends Component {
     this.setState({inputValue: e.target.value});
   }
   handleInputButton(e) {
-    this.getTable();
+    this.addTable();
     e.preventDefault();
+  }
+  addTable() {
+    let newTables = this.state.tables.slice()
+    newTables.push(this.state.inputValue)
+    this.setState({tables: newTables});
   }
   render() {
     return (
-      <div>
+      <div style = {{'maxWidth': '600px'}}>
         Main Container
         <TableFinder handleInputButton={this.handleInputButton} inputValue={this.state.inputValue} handleInputFieldChange={this.handleInputFieldChange} />
         <TablesDisplay tables={this.state.tables}/>

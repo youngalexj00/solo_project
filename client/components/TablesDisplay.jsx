@@ -4,7 +4,9 @@ import TableDisplay from './TableDisplay.jsx';
 
 const outerBox = {
   'border': '2px solid black',
-  'margin': '10px'
+  'margin': '10px',
+  'borderRadius': '3px',
+  'width': '900px'
 }
 
 
@@ -13,17 +15,15 @@ class TablesDisplay extends Component {
     super();
   }
   render() {
-    console.log('this.props.tables', this.props.tables)
     let tableElements = []
-    this.props.tables.forEach ((ele, index) => {
-      tableElements.push((<TableDisplay table={ele} key={'TableDisplayKey'+index}/>))
+    this.props.tables.forEach ((table, index) => {
+      tableElements.push((<TableDisplay tableName={table} key={'TableDisplaysKey'+index}/>))
     })
-    if (tableElements.length === 0) tableElements = (<div>Empty</div>)
+    if (tableElements.length === 0) tableElements = (<div>No Tables Loaded</div>)
     return (
       <div style ={outerBox}> 
         {tableElements}
       </div>
-     
     )
   }
 }
